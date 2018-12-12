@@ -55,10 +55,34 @@ function updateQueryStringParameter(uri, key, value) {
     }
 }
 
+/**
+ * debounce
+ * Ensures a function won't be called before a defined amount of time.
+ * Ex:
+ *    on window resize, ensure a function won't be called
+ *    until the user stopped resizing window for {time param}
+ *
+ * @param { function } fn Callback to be executed after debounce
+ * @param { int } time Time to wait before function execution
+ * @return {function(...[*])}
+ */
+function debounce(fn, time = 300) {
+    // Store active timeout.
+    let timeout;
+
+    return (...args) => {
+        // Clear active timeout to prevent fn execution
+        clearTimeout(timeout);
+        // Start a new timeout
+        timeout = setTimeout(fn.bind(null, ...args), time);
+    };
+}
+
 export {
     extendDefaults,
     getParentUrl,
     getQueryParams,
     updateQueryStringParameter,
+    debounce,
 };
 /* eslint-enable */
