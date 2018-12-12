@@ -2,6 +2,7 @@
 
 import 'es6-promise/auto';
 import 'whatwg-fetch';
+import screenfull from 'screenfull';
 
 import {
     extendDefaults,
@@ -56,14 +57,14 @@ class Embed {
                 this._createFrame(
                     this.params.url,
                     parseInt(this.params.width),
-                    parseInt(this.params.height)
+                    parseInt(this.params.height),
                 );
             });
         } else {
             this._createFrame(
                 this.params.url,
                 parseInt(this.params.width),
-                parseInt(this.params.height)
+                parseInt(this.params.height),
             );
         }
     }
@@ -77,7 +78,8 @@ class Embed {
      */
     startIEDisclaimer(callback) {
         // If IE browser.
-        const language = this.params.language || this._getFirstBrowserLanguage();
+        const language = this.params.language ||
+            this._getFirstBrowserLanguage();
         let message = '';
         let label = '';
 
@@ -122,19 +124,60 @@ class Embed {
      * @private
      */
     _createFrame(url, width, height) {
+        const container = document.getElementById('container');
+
         const frame = document.createElement('iframe');
-        frame.src = updateQueryStringParameter(url, 'gd_sdk_referrer_url', this.referrer);
+        frame.src = updateQueryStringParameter(url, 'gd_sdk_referrer_url',
+            this.referrer);
         frame.scrolling = 'none';
         frame.frameBorder = '0';
+        frame.setAttribute('allowfullscreen', 'true');
 
         this._setFrameDimensions(frame, width, height);
 
-        const container = document.getElementById('container');
         container.insertBefore(frame, container.firstChild);
 
         addEventListener('resize', () => {
             debounce(this._setFrameDimensions(frame, width, height), 100);
         }, false);
+
+        if (screenfull.enabled) {
+            const button = document.createElement('button');
+            /* eslint-disable */
+            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg>`;
+            /* eslint-enable */
+            button.style.position = 'absolute';
+            button.style.top = '1rem';
+            button.style.right = '1rem';
+            button.addEventListener('click', () => {
+                screenfull.request(frame);
+                setTimeout(() => {
+                    this._setFrameDimensions(frame, width, height);
+                }, 1000);
+            });
+
+            this._fullscreenButton(button);
+
+            container.insertBefore(button, container.firstChild);
+
+            addEventListener('resize', () => {
+                debounce(this._fullscreenButton(button), 100);
+            }, false);
+        }
+    }
+
+    /**
+     * _fullscreenButton
+     * @param {Object} button
+     * @private
+     */
+    _fullscreenButton(button) {
+        const displayMode = this._setDisplayMode();
+        if (displayMode === 'mobile') {
+            button.style.display = 'block';
+        } else {
+            button.style.display = 'none';
+        }
     }
 
     /**
@@ -170,7 +213,10 @@ class Embed {
      */
     _calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
         const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
-        return {width: Math.round(srcWidth * ratio), height: Math.round(srcHeight * ratio)};
+        return {
+            width: Math.round(srcWidth * ratio),
+            height: Math.round(srcHeight * ratio),
+        };
     }
 
     /**
@@ -180,7 +226,11 @@ class Embed {
      */
     _getFirstBrowserLanguage() {
         const nav = window.navigator;
-        const browserLanguagePropertyKeys = ['language', 'browserLanguage', 'systemLanguage', 'userLanguage'];
+        const browserLanguagePropertyKeys = [
+            'language',
+            'browserLanguage',
+            'systemLanguage',
+            'userLanguage'];
         let i;
         let language;
 
@@ -221,6 +271,22 @@ class Embed {
         const trident = ua.indexOf('Trident/');
 
         return (msie > 0 || trident > 0);
+    }
+
+    /**
+     * _setDisplayMode
+     * @return {string}
+     * @private
+     */
+    _setDisplayMode() {
+        let displayMode = 'mobile';
+        if (window.innerWidth >= 846 && window.innerWidth <= 1023) {
+            displayMode = 'tablet';
+        } else if (window.innerWidth > 1023) {
+            displayMode = 'desktop';
+        }
+
+        return displayMode;
     }
 }
 
