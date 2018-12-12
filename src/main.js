@@ -129,20 +129,23 @@ class Embed {
         const frame = document.createElement('iframe');
         frame.src = updateQueryStringParameter(url, 'gd_sdk_referrer_url',
             this.referrer);
-        frame.scrolling = 'none';
-        frame.frameBorder = '0';
+        frame.setAttribute('frameBorder', '0');
+        frame.setAttribute('allowfullscreen', 'none');
         frame.setAttribute('allowfullscreen', 'true');
 
         this._setFrameDimensions(frame, width, height);
 
-        container.insertBefore(frame, container.firstChild);
+        container.appendChild(frame);
 
         addEventListener('resize', () => {
             debounce(this._setFrameDimensions(frame, width, height), 100);
         }, false);
 
+        // Doesn't work for iOS.
         if (screenfull.enabled) {
+            const displayMode = this._getDisplayMode();
             const backdrop = document.createElement('div');
+            backdrop.style.display = displayMode === 'mobile' ? 'block' : 'none';
             backdrop.style.position = 'absolute';
             backdrop.style.zIndex = '1';
             backdrop.style.top = '0';
@@ -156,6 +159,7 @@ class Embed {
             /* eslint-disable */
             button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg>`;
             /* eslint-enable */
+            button.style.display = displayMode === 'mobile' ? 'block' : 'none';
             button.style.position = 'absolute';
             button.style.zIndex = '2';
             button.style.top = '50%';
@@ -171,7 +175,7 @@ class Embed {
             container.appendChild(button);
 
             addEventListener('resize', () => {
-                const displayMode = this._setDisplayMode();
+                const displayMode = this._getDisplayMode();
                 if (displayMode === 'mobile') {
                     backdrop.style.display = 'block';
                     button.style.display = 'block';
@@ -181,6 +185,8 @@ class Embed {
                 }
             }, false);
         }
+
+        container.appendChild(frame);
     }
 
     /**
@@ -277,15 +283,13 @@ class Embed {
     }
 
     /**
-     * _setDisplayMode
+     * _getDisplayMode
      * @return {string}
      * @private
      */
-    _setDisplayMode() {
+    _getDisplayMode() {
         let displayMode = 'mobile';
-        if (window.innerWidth >= 846 && window.innerWidth <= 1023) {
-            displayMode = 'tablet';
-        } else if (window.innerWidth > 1023) {
+        if (window.innerWidth > 768) {
             displayMode = 'desktop';
         }
 

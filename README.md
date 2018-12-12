@@ -9,7 +9,37 @@ This is the documentation of the "GameDistribution.com Embed Game" project.
 Gamedistribution.com is the biggest broker of high quality, cross-platform games. We connect the best game developers to the biggest publishers.
 
 ## Implementation within web pages
-...
+```
+<style type="text/css">
+    .gd__aspect-ratio-box {
+        position: relative;
+        overflow: hidden;
+        height: 0;
+        /*padding-top: 56.25%; !* 16:9 Aspect Ratio *!*/
+        padding-top: 75%; /* 4:3 Aspect Ratio */
+        /*padding-top: 66.66%; !* 3:2 Aspect Ratio *!*/
+        /*padding-top: 62.5%; !* 8:5 Aspect Ratio *!*/
+    }
+    .gd__aspect-ratio-box iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-radius: 2px;
+    }
+</style>
+<div class="gd__aspect-ratio-box">
+    <iframe
+        src="https://html5.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es"
+        width="100%"
+        height="100%"
+        scrolling="none"
+        frameborder="0"
+        allowfullscreen>
+    </iframe>
+</div>
+```
 
 ## Repository
 The SDK is maintained on a public github repository.
@@ -39,15 +69,12 @@ grunt build
 ```
 
 ## GET Parameters
-The following GET parameters can be added.
+The following GET parameters can be added. The first parameter should be prefixed with a `?` character and any additional ones with a `&` character.
+As an example; `https://html5.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es`.
 
 | Event | Description |
 | --- | --- |
-| SDK_READY | When the SDK is ready. |
-| SDK_ERROR | When the SDK has hit a critical error. |
-| SDK_GAME_DATA_READY | When game data is returned. |
-| SDK_GAME_START | When the game should start. |
-| SDK_GAME_PAUSE | When the game should pause. |
-| SDK_GDPR_TRACKING | When the publishers' client has requested to not track his/ her data. Hook into this event to find out if you can record client tracking data. |
-| SDK_GDPR_TARGETING | When the publishers' client has requested to not get personalised advertisements. Hook into this event to find out if you can display personalised advertisements in case you use another ad solution. |
-| SDK_GDPR_THIRD_PARTY | When the publishers' client has requested to not load third party services. Hook into this event to find out if you can third party services like Facebook, AddThis, and such alike. |
+| url | The game URL. |
+| width | The preferred height of the game. The game will remain responsive, but we use this to calculate the aspect ratio. |
+| height | the preferred width of the game. The game will remain responsive, but we use this to calculate the aspect ratio. |
+| language | Language code for the IE disclaimer. Example values; 'en', 'nl', 'de' ... |
