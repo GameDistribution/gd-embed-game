@@ -142,13 +142,25 @@ class Embed {
         }, false);
 
         if (screenfull.enabled) {
+            const backdrop = document.createElement('div');
+            backdrop.style.position = 'absolute';
+            backdrop.style.zIndex = '1';
+            backdrop.style.top = '0';
+            backdrop.style.width = '100%';
+            backdrop.style.height = '100%';
+            backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+
+            container.appendChild(backdrop);
+
             const button = document.createElement('button');
             /* eslint-disable */
             button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg>`;
             /* eslint-enable */
             button.style.position = 'absolute';
-            button.style.top = '1rem';
-            button.style.right = '1rem';
+            button.style.zIndex = '2';
+            button.style.top = '50%';
+            button.style.left = '50%';
+            button.style.transform = 'translate(-50%, -50%)';
             button.addEventListener('click', () => {
                 screenfull.request(frame);
                 setTimeout(() => {
@@ -156,27 +168,18 @@ class Embed {
                 }, 1000);
             });
 
-            this._fullscreenButton(button);
-
-            container.insertBefore(button, container.firstChild);
+            container.appendChild(button);
 
             addEventListener('resize', () => {
-                debounce(this._fullscreenButton(button), 100);
+                const displayMode = this._setDisplayMode();
+                if (displayMode === 'mobile') {
+                    backdrop.style.display = 'block';
+                    button.style.display = 'block';
+                } else {
+                    backdrop.style.display = 'none';
+                    button.style.display = 'none';
+                }
             }, false);
-        }
-    }
-
-    /**
-     * _fullscreenButton
-     * @param {Object} button
-     * @private
-     */
-    _fullscreenButton(button) {
-        const displayMode = this._setDisplayMode();
-        if (displayMode === 'mobile') {
-            button.style.display = 'block';
-        } else {
-            button.style.display = 'none';
         }
     }
 
