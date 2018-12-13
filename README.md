@@ -12,6 +12,8 @@ GameDistribution.com is the biggest broker of high quality, cross-platform games
 Copy/ past the following snippet on the spot where you would like to display a game within your web page. Adjust the GET parameters of the `https://embed.gamedistribution.com/` iframe `src` URL to change the game itself. You can adjust various other parameter values to suit your or your clients' needs. All available parameters are described below.
 
 The CSS snippet will help you set an aspect ratio, which remains responsive. The game will match the this ratio, based on the given width and height of the game.
+
+A demo page can be found here: <a href="https://embed.gamedistribution.com/demo.html" target="_blank">https://embed.gamedistribution.com/demo.html</a>. 
 ```
 <style type="text/css">
     .gd__aspect-ratio-box {
