@@ -31,7 +31,7 @@ GameDistribution.com is the biggest broker of high quality, cross-platform games
 </style>
 <div class="gd__aspect-ratio-box">
     <iframe
-        src="https://embed.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1"
+        src="https://embed.gamedistribution.com/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1"
         width="100%"
         height="100%"
         scrolling="none"
@@ -70,7 +70,7 @@ grunt build
 
 ## GET Parameters
 The following GET parameters can be added. The first parameter should be prefixed with a `?` character and any additional ones with a `&` character.
-As an example; `https://html5.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1`.
+As an example; `https://html5.gamedistribution.com/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1`.
 
 | Event | Description |
 | --- | --- |

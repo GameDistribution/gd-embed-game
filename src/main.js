@@ -51,7 +51,6 @@ class Embed {
         }
 
         this.referrer = getParentUrl();
-        this.viewport = null;
 
         // console.log(this.options);
         // console.log(this.referrer);
@@ -246,7 +245,8 @@ class Embed {
             view.top,
         );
 
-        console.log(`${view.left}x${view.top}`);
+        console.log(`viewport: ${view.left}x${view.top}`);
+        console.log(dimensions);
 
         frame.width = `${dimensions.width}`;
         frame.height = `${dimensions.height}`;
@@ -349,8 +349,8 @@ const embed = new Embed({
     gdprTracking: params['gdpr-tracking'],
     gdprTargeting: params['gdpr-targeting'],
     gdprThirdParty: params['gdpr-third-party'],
-    width: parseInt(params['width']),
-    height: parseInt(params['height']),
+    width: params['width'],
+    height: params['height'],
     language: params['language'],
 });
 embed.start();
