@@ -245,8 +245,8 @@ class Embed {
             view.top,
         );
 
-        console.log(`viewport: ${view.left}x${view.top}`);
-        console.log(dimensions);
+        // console.log(`viewport: ${view.left}x${view.top}`);
+        // console.log(dimensions);
 
         frame.width = `${dimensions.width}`;
         frame.height = `${dimensions.height}`;
