@@ -35,6 +35,13 @@ class Embed {
         // values further down.
         const defaults = {
             debug: false,
+            url: 'https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/',
+            width: 900,
+            height: 510,
+            gdprTracking: '1',
+            gdprTargeting: '1',
+            gdprThirdParty: '1',
+            language: this._getFirstBrowserLanguage(),
         };
 
         if (options) {
@@ -43,8 +50,11 @@ class Embed {
             this.options = defaults;
         }
 
-        this.params = getQueryParams();
         this.referrer = getParentUrl();
+        this.viewport = null;
+
+        // console.log(this.options);
+        // console.log(this.referrer);
     }
 
     /**
@@ -52,19 +62,40 @@ class Embed {
      * @public
      */
     start() {
+        let url = updateQueryStringParameter(
+            this.options.url,
+            'gd_sdk_referrer_url',
+            this.referrer,
+        );
+        url = updateQueryStringParameter(
+            url,
+            'gdpr-tracking',
+            this.options.gdprTracking,
+        );
+        url = updateQueryStringParameter(
+            url,
+            'gdpr-targeting',
+            this.options.gdprTargeting,
+        );
+        url = updateQueryStringParameter(
+            url,
+            'gdpr-third-party',
+            this.options.gdprThirdParty,
+        );
+
         if (this._isIE()) {
             this.startIEDisclaimer(() => {
                 this._createFrame(
-                    this.params.url,
-                    parseInt(this.params.width),
-                    parseInt(this.params.height),
+                    url,
+                    parseInt(this.options.width),
+                    parseInt(this.options.height),
                 );
             });
         } else {
             this._createFrame(
-                this.params.url,
-                parseInt(this.params.width),
-                parseInt(this.params.height),
+                url,
+                parseInt(this.options.width),
+                parseInt(this.options.height),
             );
         }
     }
@@ -78,13 +109,11 @@ class Embed {
      */
     startIEDisclaimer(callback) {
         // If IE browser.
-        const language = this.params.language ||
-            this._getFirstBrowserLanguage();
         let message = '';
         let label = '';
 
         /* eslint-disable */
-        switch (language) {
+        switch (this.options.language) {
             case 'nl':
                 message = `Deze game is mogelijk niet geoptimaliseerd voor jouw internetbrowser. Prestatieproblemen kunnen optreden.`;
                 label = `Doorgaan`;
@@ -126,26 +155,39 @@ class Embed {
     _createFrame(url, width, height) {
         const container = document.getElementById('container');
 
+        // First create an element to detect the height and width our viewport.
+        // This is mostly a fix for iOS, as using window.innerWidth won't work.
+        const viewport = document.createElement('div');
+        viewport.style.position = 'absolute';
+        viewport.style.zIndex = '0';
+        viewport.style.bottom = '0';
+        viewport.style.right = '0';
+        viewport.style.width = '1px';
+        viewport.style.height = '1px';
+
+        container.appendChild(viewport);
+
         const frame = document.createElement('iframe');
-        frame.src = updateQueryStringParameter(url, 'gd_sdk_referrer_url',
-            this.referrer);
+        frame.src = url;
         frame.setAttribute('frameBorder', '0');
         frame.setAttribute('allowfullscreen', 'none');
         frame.setAttribute('allowfullscreen', 'true');
 
-        this._setFrameDimensions(frame, width, height);
+        this._setFrameDimensions(viewport, frame, width, height);
 
         container.appendChild(frame);
 
         addEventListener('resize', () => {
-            debounce(this._setFrameDimensions(frame, width, height), 100);
+            debounce(this._setFrameDimensions(viewport, frame, width, height), 100);
         }, false);
 
         // Doesn't work for iOS.
         if (screenfull.enabled) {
             const displayMode = this._getDisplayMode();
             const backdrop = document.createElement('div');
-            backdrop.style.display = displayMode === 'mobile' ? 'block' : 'none';
+            backdrop.style.display = displayMode === 'mobile'
+                ? 'block'
+                : 'none';
             backdrop.style.position = 'absolute';
             backdrop.style.zIndex = '1';
             backdrop.style.top = '0';
@@ -168,7 +210,7 @@ class Embed {
             button.addEventListener('click', () => {
                 screenfull.request(frame);
                 setTimeout(() => {
-                    this._setFrameDimensions(frame, width, height);
+                    this._setFrameDimensions(viewport, frame, width, height);
                 }, 1000);
             });
 
@@ -185,24 +227,26 @@ class Embed {
                 }
             }, false);
         }
-
-        container.appendChild(frame);
     }
 
     /**
      * _setFrameDimensions
+     * @param {Object} viewport
      * @param {Object} frame
      * @param {Number} width
      * @param {Number} height
      * @private
      */
-    _setFrameDimensions(frame, width, height) {
+    _setFrameDimensions(viewport, frame, width, height) {
+        const view = viewport.getBoundingClientRect();
         const dimensions = this._calculateAspectRatioFit(
             width,
             height,
-            window.innerWidth,
-            window.innerHeight,
+            view.left,
+            view.top,
         );
+
+        console.log(`${view.left}x${view.top}`);
 
         frame.width = `${dimensions.width}`;
         frame.height = `${dimensions.height}`;
@@ -299,5 +343,14 @@ class Embed {
 
 export default Embed;
 
-const embed = new Embed({});
+const params = getQueryParams();
+const embed = new Embed({
+    url: params['url'],
+    gdprTracking: params['gdpr-tracking'],
+    gdprTargeting: params['gdpr-targeting'],
+    gdprThirdParty: params['gdpr-third-party'],
+    width: parseInt(params['width']),
+    height: parseInt(params['height']),
+    language: params['language'],
+});
 embed.start();

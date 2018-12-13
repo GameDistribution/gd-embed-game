@@ -6,7 +6,7 @@
 # GameDistribution.com Embed Game
 This is the documentation of the "GameDistribution.com Embed Game" project.
 
-Gamedistribution.com is the biggest broker of high quality, cross-platform games. We connect the best game developers to the biggest publishers.
+GameDistribution.com is the biggest broker of high quality, cross-platform games. We connect the best game developers to the biggest publishers.
 
 ## Implementation within web pages
 ```
@@ -31,7 +31,7 @@ Gamedistribution.com is the biggest broker of high quality, cross-platform games
 </style>
 <div class="gd__aspect-ratio-box">
     <iframe
-        src="https://html5.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es"
+        src="https://embed.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1"
         width="100%"
         height="100%"
         scrolling="none"
@@ -70,11 +70,14 @@ grunt build
 
 ## GET Parameters
 The following GET parameters can be added. The first parameter should be prefixed with a `?` character and any additional ones with a `&` character.
-As an example; `https://html5.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es`.
+As an example; `https://html5.gamedistribution.com/embed/?url=https://html5.gamedistribution.com/a1c4858cc2db451bb97c8e926257b49a/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1`.
 
 | Event | Description |
 | --- | --- |
 | url | The game URL. |
 | width | The preferred height of the game. The game will remain responsive, but we use this to calculate the aspect ratio. |
 | height | the preferred width of the game. The game will remain responsive, but we use this to calculate the aspect ratio. |
-| language | Language code for the IE disclaimer. Example values; 'en', 'nl', 'de' ... |
+| language | Language code for the IE disclaimer. Example values; `en`, `nl`, `de` ... |
+| gdpr-tracking | Set to `0` to disable tracking services or to `1` to keep them enabled. |
+| gdpr-targeting | Set to `0` to disable advertisement targeting or to `1` to keep it enabled. Take note, setting this to a values of `0` can have great revenue impact. |
+| gdpr-third-party | Set to `0` to disable third party services or to `1` to keep them enabled. |
