@@ -52,6 +52,11 @@ class Embed {
 
         this.referrer = getParentUrl();
 
+        // Substract the caption so calculating aspect ratio
+        // can take this in account.
+        const caption = document.getElementById('caption');
+        this.captionHeight = caption ? caption.offsetHeight : 0;
+
         // console.log(this.options);
         // console.log(this.referrer);
     }
@@ -113,16 +118,100 @@ class Embed {
 
         /* eslint-disable */
         switch (this.options.language) {
+            case 'ar':
+                message = `هذه اللعبة غير مدعومة بشكل كامل من متصفحك. قد تواجه مشكلات في الأداء.`;
+                label = `استمر`;
+                break;
+            case 'da':
+                message = `Dette spil understøttes ikke fuldt ud af din browser. Du vil måske opleve problemer med ydeevnen.`;
+                label = `Blive ved`;
+                break;
             case 'nl':
-                message = `Deze game is mogelijk niet geoptimaliseerd voor jouw internetbrowser. Prestatieproblemen kunnen optreden.`;
+                message = `Deze game wordt niet volledig ondersteund door uw browser. U ondervindt mogelijk prestatieproblemen.`;
                 label = `Doorgaan`;
                 break;
-            case 'es':
-                message = `Es posible que este juego no esté optimizado para este navegador. Los problemas de rendimiento pueden ocurrir.`;
+            case 'fi':
+                message = `Selaimesi ei tue peliä kaikilta osin. Tämä voi aiheuttaa suorituskykyyn liittyviä ongelmia.`;
+                label = `Jatkaa`;
+                break;
+            case 'fr':
+                message = `Ce jeu n'est pas totalement pris en charge par votre navigateur. Vous rencontrerez peut-être des problèmes de performances.`;
+                label = `Continuer`;
+                break;
+            case 'de':
+                message = `Dieses Spiel wird von Ihrem Browser nicht vollständig unterstützt. Es kann zu Performance-Problemen kommen.`;
+                label = `Fortsetzen`;
+                break;
+            case 'el':
+                message = `Αυτό το παιχνίδι δεν υποστηρίζεται πλήρως από το πρόγραμμα περιήγησής σας. Ενδέχεται να αντιμετωπίσετε θέματα επιδόσεων.`;
+                label = `Να συνεχίσει`;
+                break;
+            case 'he':
+                message = `משחק זה אינו נתמך באופן מלא על-ידי הדפדפן שלך. ייתכן שתיתקל בבעיות בביצועים.`;
+                label = `המשך`;
+                break;
+            case 'hi':
+                message = `यह गेम आपके ब्राउज़र द्वारा पूरी तरह से समर्थित नहीं है. आप प्रदर्शन मुद्दों का अनुभव कर सकते हैं.`;
+                label = `जारी रहना`;
+                break;
+            case 'id':
+                message = `Permainan ini tidak sepenuhnya dukungan oleh browser Anda. Anda mungkin akan mengalami masalah performa.`;
+                label = `Terus`;
+                break;
+            case 'it':
+                message = `Questo gioco non è completamente supportato dal tuo browser. Potrebbero verificarsi problemi di prestazioni.`;
+                label = `Continua`;
+                break;
+            case 'jp':
+                message = `このゲームはお使いのブラウザーで完全にはサポートされていません。パフォーマンスの問題が発生する可能性があります。`;
+                label = `持続する`;
+                break;
+            case 'kr':
+                message = `이 게임은 브라우저에서 완전히 지원하지 않습니다. 성능 문제가 발생할 수 있습니다.`;
+                label = `잇다`;
+                break;
+            case 'no':
+                message = `Dette spillet støttes ikke helt av nettleseren. Du kan oppleve ytelsesproblemer.`;
+                label = `Fortsette`;
+                break;
+            case 'pl':
+                message = `Twoja przeglądarka nie obsługuje w pełni tej gry. Mogą wystąpić problemy z wydajnością.`;
+                label = `dalej`;
+                break;
+            case 'pt':
+                message = `Este jogo não é totalmente suportado pelo browser. Poderão ocorrer problemas de desempenho.`;
                 label = `Continuar`;
                 break;
+            case 'ru':
+                message = `Эта игра не в полной мере поддерживается вашим браузером. При ее использовании могут возникнуть проблемы.`;
+                label = `Продолжить`;
+                break;
+            case 'zh':
+                message = `你的浏览器不完全支持此游戏。你可能会遇到性能问题。`;
+                label = `继续`;
+                break;
+            case 'es':
+                message = `Este juego no es del todo compatible con tu navegador, por lo que podrías experimentar problemas de rendimiento.`;
+                label = `Continuar`;
+                break;
+            case 'sv':
+                message = `Din webbläsare har inte fullt stöd för det här spelet. Du kan uppleva prestandaproblem.`;
+                label = `Fortsätta`;
+                break;
+            case 'th':
+                message = `เบราว์เซอร์ของคุณไม่สามารถรองรับเกมนี้ได้อย่างเต็มที่ คุณอาจประสบปัญหาด้านประสิทธิภาพ`;
+                label = `ต่อ`;
+                break;
+            case 'tr':
+                message = `Bu oyun, tarayıcınız tarafından tam desteklenmiyor. Performans sorunları yaşayabilirsiniz.`;
+                label = `Devam et`;
+                break;
+            case 'vi':
+                message = `Trình duyệt của bạn không hỗ trợ đầy đủ trò chơi này. Bạn có thể gặp sự cố về hiệu năng.`;
+                label = `Tiếp tục`;
+                break;
             default:
-                message = `This game might not be optimized for your internet browser. Performance issues might occur.`;
+                message = `This game is not fully support by your browser.  You may experience performance issues. `;
                 label = `Continue`;
         }
         /* eslint-enable */
@@ -242,7 +331,7 @@ class Embed {
             width,
             height,
             view.left,
-            view.top,
+            view.top - this.captionHeight,
         );
 
         // console.log(`viewport: ${view.left}x${view.top}`);

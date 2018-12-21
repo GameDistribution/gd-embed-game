@@ -10,9 +10,9 @@
         body {
             margin: 0;
             padding: 0;
-            background-color: #111;
+            background-color: #fff;
             font-size: 1rem;
-            font-family: Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', 'Segoe WP', Helvetica, Arial, sans-serif;
             color: #fff;
             line-height: 170%;
         }
@@ -29,7 +29,7 @@
             background: linear-gradient(0deg, #dddddd, #ffffff);
             color: #222;
             text-shadow: 0 0 1px #fff;
-            font-family: Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', 'Segoe WP', Helvetica, Arial, sans-serif;
             font-weight: bold;
             font-size: 18px;
             cursor: pointer;
@@ -51,6 +51,10 @@
             height: 100%;
         }
 
+        .wrapper-row {
+            display: table-row;
+        }
+
         .container {
             display: table-cell;
             vertical-align: middle;
@@ -58,6 +62,22 @@
             width: 100%;
             height: 100%;
             text-align: center;
+            background-color: #111;
+        }
+
+        .caption {
+            display: block;
+            width: 100%;
+            white-space: nowrap;
+            line-height: 1.5rem;
+            font-size: 0.6rem;
+            text-align: right;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .caption a {
+            color: #666;
         }
     </style>
 
@@ -65,8 +85,14 @@
 <body>
 
 <div class="wrapper">
-    <div id="container" class="container"></div>
+    <div class="wrapper-row">
+        <div id="container" class="container"></div>
+    </div>
+    <div class="wrapper-row">
+        <span id="caption" class="caption">Provided by GameDistribution (<a href="https://docs.google.com/document/u/0/d/e/2PACX-1vR0BAkCq-V-OkAJ3EBT4qW4sZ9k1ta9K9EAa32V9wlxOOgP-BrY9Nv-533A_zdN3yi7tYRjO1r5cLxS/pub">privacy policy</a>).</span>
+    </div>
 </div>
+
 
 <script async type="application/javascript" src="./lib/main.min.js?v=1"></script>
 
