@@ -120,11 +120,11 @@ class Embed {
         switch (this.options.language) {
             case 'ar':
                 message = `هذه اللعبة غير مدعومة بشكل كامل من متصفحك. قد تواجه مشكلات في الأداء.`;
-                label = `استمر`;
+                label = `متابعة`;
                 break;
             case 'da':
                 message = `Dette spil understøttes ikke fuldt ud af din browser. Du vil måske opleve problemer med ydeevnen.`;
-                label = `Blive ved`;
+                label = `Fortsæt`;
                 break;
             case 'nl':
                 message = `Deze game wordt niet volledig ondersteund door uw browser. U ondervindt mogelijk prestatieproblemen.`;
@@ -132,7 +132,7 @@ class Embed {
                 break;
             case 'fi':
                 message = `Selaimesi ei tue peliä kaikilta osin. Tämä voi aiheuttaa suorituskykyyn liittyviä ongelmia.`;
-                label = `Jatkaa`;
+                label = `Jatka`;
                 break;
             case 'fr':
                 message = `Ce jeu n'est pas totalement pris en charge par votre navigateur. Vous rencontrerez peut-être des problèmes de performances.`;
@@ -140,11 +140,11 @@ class Embed {
                 break;
             case 'de':
                 message = `Dieses Spiel wird von Ihrem Browser nicht vollständig unterstützt. Es kann zu Performance-Problemen kommen.`;
-                label = `Fortsetzen`;
+                label = `Weiter`;
                 break;
             case 'el':
                 message = `Αυτό το παιχνίδι δεν υποστηρίζεται πλήρως από το πρόγραμμα περιήγησής σας. Ενδέχεται να αντιμετωπίσετε θέματα επιδόσεων.`;
-                label = `Να συνεχίσει`;
+                label = `Συνέχεια`;
                 break;
             case 'he':
                 message = `משחק זה אינו נתמך באופן מלא על-ידי הדפדפן שלך. ייתכן שתיתקל בבעיות בביצועים.`;
@@ -152,11 +152,11 @@ class Embed {
                 break;
             case 'hi':
                 message = `यह गेम आपके ब्राउज़र द्वारा पूरी तरह से समर्थित नहीं है. आप प्रदर्शन मुद्दों का अनुभव कर सकते हैं.`;
-                label = `जारी रहना`;
+                label = `जारी रखें`;
                 break;
             case 'id':
                 message = `Permainan ini tidak sepenuhnya dukungan oleh browser Anda. Anda mungkin akan mengalami masalah performa.`;
-                label = `Terus`;
+                label = `Lanjut`;
                 break;
             case 'it':
                 message = `Questo gioco non è completamente supportato dal tuo browser. Potrebbero verificarsi problemi di prestazioni.`;
@@ -164,19 +164,19 @@ class Embed {
                 break;
             case 'jp':
                 message = `このゲームはお使いのブラウザーで完全にはサポートされていません。パフォーマンスの問題が発生する可能性があります。`;
-                label = `持続する`;
+                label = `続行`;
                 break;
             case 'kr':
                 message = `이 게임은 브라우저에서 완전히 지원하지 않습니다. 성능 문제가 발생할 수 있습니다.`;
-                label = `잇다`;
+                label = `계속`;
                 break;
             case 'no':
                 message = `Dette spillet støttes ikke helt av nettleseren. Du kan oppleve ytelsesproblemer.`;
-                label = `Fortsette`;
+                label = `Fortsett`;
                 break;
             case 'pl':
                 message = `Twoja przeglądarka nie obsługuje w pełni tej gry. Mogą wystąpić problemy z wydajnością.`;
-                label = `dalej`;
+                label = `Kontynuuj`;
                 break;
             case 'pt':
                 message = `Este jogo não é totalmente suportado pelo browser. Poderão ocorrer problemas de desempenho.`;
@@ -196,22 +196,22 @@ class Embed {
                 break;
             case 'sv':
                 message = `Din webbläsare har inte fullt stöd för det här spelet. Du kan uppleva prestandaproblem.`;
-                label = `Fortsätta`;
+                label = `Fortsätt`;
                 break;
             case 'th':
                 message = `เบราว์เซอร์ของคุณไม่สามารถรองรับเกมนี้ได้อย่างเต็มที่ คุณอาจประสบปัญหาด้านประสิทธิภาพ`;
-                label = `ต่อ`;
+                label = `ดำเนินการต่อ`;
                 break;
             case 'tr':
                 message = `Bu oyun, tarayıcınız tarafından tam desteklenmiyor. Performans sorunları yaşayabilirsiniz.`;
-                label = `Devam et`;
+                label = `Devam`;
                 break;
             case 'vi':
                 message = `Trình duyệt của bạn không hỗ trợ đầy đủ trò chơi này. Bạn có thể gặp sự cố về hiệu năng.`;
-                label = `Tiếp tục`;
+                label = `Tiếp tục`;
                 break;
             default:
-                message = `This game is not fully support by your browser.  You may experience performance issues. `;
+                message = `This game is not fully supported by your browser. You may experience performance issues. `;
                 label = `Continue`;
         }
         /* eslint-enable */
