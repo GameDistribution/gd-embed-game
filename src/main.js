@@ -258,7 +258,6 @@ class Embed {
         const frame = document.createElement('iframe');
         frame.src = url;
         frame.setAttribute('frameBorder', '0');
-        frame.setAttribute('allowfullscreen', 'none');
         frame.setAttribute('allowfullscreen', 'true');
 
         this._setFrameDimensions(viewport, frame, width, height);
