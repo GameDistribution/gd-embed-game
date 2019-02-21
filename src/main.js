@@ -2,7 +2,7 @@
 
 import 'es6-promise/auto';
 import 'whatwg-fetch';
-import screenfull from 'screenfull';
+// import screenfull from 'screenfull';
 
 import {
     extendDefaults,
@@ -53,7 +53,7 @@ class Embed {
         this.referrer = getParentUrl();
 
         // Substract the caption so calculating aspect ratio
-        // can take this in account.
+        // can take this into account.
         const caption = document.getElementById('caption');
         this.captionHeight = caption ? caption.offsetHeight : 0;
 
@@ -87,20 +87,40 @@ class Embed {
             this.options.gdprThirdParty,
         );
 
+        const displayMode = this._getDisplayMode();
+
         if (this._isIE()) {
             this.startIEDisclaimer(() => {
+                if (displayMode === 'desktop') {
+                    this._createFrame(
+                        url,
+                        parseInt(this.options.width),
+                        parseInt(this.options.height),
+                    );
+                } else {
+                    this._createSplash(
+                        '49258a0e497c42b5b5d87887f24d27a6',
+                        url,
+                        parseInt(this.options.width),
+                        parseInt(this.options.height),
+                    );
+                }
+            });
+        } else {
+            if (displayMode === 'desktop') {
                 this._createFrame(
                     url,
                     parseInt(this.options.width),
                     parseInt(this.options.height),
                 );
-            });
-        } else {
-            this._createFrame(
-                url,
-                parseInt(this.options.width),
-                parseInt(this.options.height),
-            );
+            } else {
+                this._createSplash(
+                    '49258a0e497c42b5b5d87887f24d27a6',
+                    url,
+                    parseInt(this.options.width),
+                    parseInt(this.options.height),
+                );
+            }
         }
     }
 
@@ -253,10 +273,12 @@ class Embed {
         viewport.style.width = '1px';
         viewport.style.height = '1px';
 
-        container.appendChild(viewport);
+        container.parentNode.appendChild(viewport);
 
         const frame = document.createElement('iframe');
         frame.src = url;
+        frame.style.display = 'block';
+        frame.style.margin = 'auto';
         frame.setAttribute('frameBorder', '0');
         frame.setAttribute('allowfullscreen', 'true');
 
@@ -268,52 +290,252 @@ class Embed {
             debounce(this._setFrameDimensions(viewport, frame, width, height), 100);
         }, false);
 
+
         // Doesn't work for iOS.
-        if (screenfull.enabled) {
-            const displayMode = this._getDisplayMode();
-            const backdrop = document.createElement('div');
-            backdrop.style.display = displayMode === 'mobile'
-                ? 'block'
-                : 'none';
-            backdrop.style.position = 'absolute';
-            backdrop.style.zIndex = '1';
-            backdrop.style.top = '0';
-            backdrop.style.width = '100%';
-            backdrop.style.height = '100%';
-            backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        // if (screenfull.enabled) {
+        //     const displayMode = this._getDisplayMode();
+        //     const backdrop = document.createElement('div');
+        //     backdrop.style.display = displayMode === 'mobile'
+        //         ? 'block'
+        //         : 'none';
+        //     backdrop.style.position = 'absolute';
+        //     backdrop.style.zIndex = '1';
+        //     backdrop.style.top = '0';
+        //     backdrop.style.width = '100%';
+        //     backdrop.style.height = '100%';
+        //     backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+        //
+        //     container.appendChild(backdrop);
+        //
+        //     const button = document.createElement('button');
+        //     /* eslint-disable */
+        //     button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg>`;
+        //     /* eslint-enable */
+        //     button.style.display = displayMode === 'mobile' ? 'block' : 'none';
+        //     button.style.position = 'absolute';
+        //     button.style.zIndex = '2';
+        //     button.style.top = '50%';
+        //     button.style.left = '50%';
+        //     button.style.transform = 'translate(-50%, -50%)';
+        //     button.addEventListener('click', () => {
+        //         screenfull.request(frame);
+        //         setTimeout(() => {
+        //             this._setFrameDimensions(viewport, frame, width, height);
+        //         }, 1000);
+        //     });
+        //
+        //     container.appendChild(button);
+        //
+        //     addEventListener('resize', () => {
+        //         const displayMode = this._getDisplayMode();
+        //         if (displayMode === 'mobile') {
+        //             backdrop.style.display = 'block';
+        //             button.style.display = 'block';
+        //         } else {
+        //             backdrop.style.display = 'none';
+        //             button.style.display = 'none';
+        //         }
+        //     }, false);
+        // }
+    }
 
-            container.appendChild(backdrop);
+    /**
+     * _createSplash
+     * On mobile devices we want fullscreen games so we want to trigger
+     * a click to put the game fullscreen. We can't use the fullscreen API
+     * due to browser incompatibility so we just enlarge the iframe on the
+     * publisher website.
+     * @param {String} id - GameDistribution game hash.
+     * @param {String} url
+     * @param {Number} width
+     * @param {Number} height
+     * @private
+     */
+    _createSplash(id, url, width, height) {
+        this._getGameData(id).then(gameData => {
+            let thumbnail = gameData.assets.find(asset =>
+                asset.hasOwnProperty('name') && asset.width === 512 && asset.height === 512);
+            if (thumbnail) {
+                thumbnail = `https://img.gamedistribution.com/${thumbnail.name}`;
+            } else if (gameData.assets[0].hasOwnProperty('name')) {
+                thumbnail = `https://img.gamedistribution.com/${gameData.assets[0].name}`;
+            } else {
+                thumbnail = `https://img.gamedistribution.com/logo.svg`;
+            }
 
-            const button = document.createElement('button');
             /* eslint-disable */
-            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg>`;
-            /* eslint-enable */
-            button.style.display = displayMode === 'mobile' ? 'block' : 'none';
-            button.style.position = 'absolute';
-            button.style.zIndex = '2';
-            button.style.top = '50%';
-            button.style.left = '50%';
-            button.style.transform = 'translate(-50%, -50%)';
-            button.addEventListener('click', () => {
-                screenfull.request(frame);
-                setTimeout(() => {
-                    this._setFrameDimensions(viewport, frame, width, height);
-                }, 1000);
-            });
-
-            container.appendChild(button);
-
-            addEventListener('resize', () => {
-                const displayMode = this._getDisplayMode();
-                if (displayMode === 'mobile') {
-                    backdrop.style.display = 'block';
-                    button.style.display = 'block';
-                } else {
-                    backdrop.style.display = 'none';
-                    button.style.display = 'none';
+            const css = `
+                body {
+                    position: inherit;
                 }
-            }, false);
-        }
+                .splash-container {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    bottom: 0;
+                    left: 0;
+                }
+                .splash-background-container {
+                    box-sizing: border-box;
+                    position: absolute;
+                    z-index: 664;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background-color: #000;
+                    overflow: hidden;
+                }
+                .splash-background-image {
+                    box-sizing: border-box;
+                    position: absolute;
+                    top: -25%;
+                    left: -25%;
+                    width: 150%;
+                    height: 150%;
+                    background-image: url(${thumbnail});
+                    background-size: cover;
+                    filter: blur(50px) brightness(1.5);
+                }
+                .splash-inner {
+                    display: flex;
+                    flex-flow: column;
+                    box-sizing: border-box;
+                    position: absolute;
+                    z-index: 665;
+                    bottom: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+                .splash-top {
+                    display: flex;
+                    flex-flow: column;
+                    box-sizing: border-box;
+                    flex: 1;
+                    align-self: center;
+                    justify-content: center;
+                    padding: 20px;
+                }
+                .splash-top > div {
+                    text-align: center;
+                }
+                .splash-top > div > button {
+                    border: 0;
+                    margin: auto;
+                    padding: 10px 22px;
+                    border-radius: 5px;
+                    border: 3px solid white;
+                    background: linear-gradient(0deg, #dddddd, #ffffff);
+                    color: #222;
+                    text-transform: uppercase;
+                    text-shadow: 0 0 1px #fff;
+                    font-family: Helvetica, Arial, sans-serif;
+                    font-weight: bold;
+                    font-size: 18px;
+                    cursor: pointer;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+                }
+                .splash-top > div > button:hover {
+                    background: linear-gradient(0deg, #ffffff, #dddddd);
+                }
+                .splash-top > div > button:active {
+                    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+                    background: linear-gradient(0deg, #ffffff, #f5f5f5);
+                }
+                .splash-top > div > div {
+                    position: relative;
+                    width: 150px;
+                    height: 150px;
+                    margin: auto auto 20px;
+                    border-radius: 100%;
+                    overflow: hidden;
+                    border: 3px solid rgba(255, 255, 255, 1);
+                    background-color: #000;
+                    box-shadow: inset 0 5px 5px rgba(0, 0, 0, 0.5), 0 2px 4px rgba(0, 0, 0, 0.3);
+                    background-image: url(${thumbnail});
+                    background-position: center;
+                    background-size: cover;
+                }
+                .splash-top > div > div > img {
+                    width: 100%;
+                    height: 100%;
+                }
+            `;
+            /* eslint-enable */
+            const head = document.head || document.getElementsByTagName('head')[0];
+            const style = document.createElement('style');
+            style.type = 'text/css';
+            if (style.styleSheet) {
+                style.styleSheet.cssText = css;
+            } else {
+                style.appendChild(document.createTextNode(css));
+            }
+            head.appendChild(style);
+
+            let html = `
+                <div class="splash-background-container">
+                    <div class="splash-background-image"></div>
+                </div>
+                <div class="splash-inner">
+                    <div class="splash-top">
+                        <div>
+                            <div></div>
+                            <button id="splash-button">Play Game</button>
+                        </div>   
+                    </div>
+                </div>
+            `;
+            const splash = document.createElement('div');
+            splash.className = 'splash-container';
+            splash.innerHTML = html;
+
+            const container = document.getElementById('container');
+            container.appendChild(splash);
+
+            const button = document.getElementById('splash-button');
+            button.addEventListener('click', () => {
+                splash.parentNode.removeChild(splash);
+                this._createFrame(url, width, height);
+            });
+        }).catch(error => {
+            throw new Error(error);
+        });
+    }
+
+    /**
+     * getGameData
+     * @param {String} id
+     * @return {Promise<any>}
+     * @private
+     */
+    _getGameData(id) {
+        return new Promise(resolve => {
+            let gameData = {
+                assets: [],
+            };
+            const gameDataUrl = `https://game.api.gamedistribution.com/game/get/${id.replace(/-/g, '')}`;
+            const gameDataRequest = new Request(gameDataUrl, {method: 'GET'});
+            fetch(gameDataRequest).then((response) => {
+                const contentType = response.headers.get('content-type');
+                if (contentType &&
+                    contentType.indexOf('application/json') !== -1) {
+                    return response.json();
+                } else {
+                    throw new TypeError('Oops, we didn\'t get JSON!');
+                }
+            }).then(json => {
+                if (json.success) {
+                    const retrievedGameData = {
+                        assets: json.result.game.assets,
+                    };
+                    gameData = extendDefaults(gameData, retrievedGameData);
+                }
+                resolve(gameData);
+            }).catch(() => {
+                // Resolve with default data.
+                resolve(gameData);
+            });
+        });
     }
 
     /**
@@ -329,8 +551,8 @@ class Embed {
         const dimensions = this._calculateAspectRatioFit(
             width,
             height,
-            view.left,
-            view.top - this.captionHeight,
+            Math.ceil(view.left),
+            Math.ceil(view.top) - this.captionHeight,
         );
 
         // console.log(`viewport: ${view.left}x${view.top}`);
@@ -355,8 +577,8 @@ class Embed {
     _calculateAspectRatioFit(srcWidth, srcHeight, maxWidth, maxHeight) {
         const ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
         return {
-            width: Math.round(srcWidth * ratio),
-            height: Math.round(srcHeight * ratio),
+            width: Math.ceil(srcWidth * ratio),
+            height: Math.ceil(srcHeight * ratio),
         };
     }
 
