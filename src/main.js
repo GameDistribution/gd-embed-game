@@ -2,7 +2,8 @@
 
 import 'es6-promise/auto';
 import 'whatwg-fetch';
-// import screenfull from 'screenfull';
+import screenfull from 'screenfull';
+import {Translations} from './modules/translations';
 
 import {
     extendDefaults,
@@ -52,7 +53,7 @@ class Embed {
 
         this.referrer = getParentUrl();
 
-        // Substract the caption so calculating aspect ratio
+        // Subtract the caption so calculating aspect ratio
         // can take this into account.
         const caption = document.getElementById('caption');
         this.captionHeight = caption ? caption.offsetHeight : 0;
@@ -88,6 +89,7 @@ class Embed {
         );
 
         const displayMode = this._getDisplayMode();
+        const gameId = this._getGameIdFromURL(this.options.url);
 
         if (this._isIE()) {
             this.startIEDisclaimer(() => {
@@ -99,7 +101,7 @@ class Embed {
                     );
                 } else {
                     this._createSplash(
-                        '49258a0e497c42b5b5d87887f24d27a6',
+                        gameId,
                         url,
                         parseInt(this.options.width),
                         parseInt(this.options.height),
@@ -115,7 +117,7 @@ class Embed {
                 );
             } else {
                 this._createSplash(
-                    '49258a0e497c42b5b5d87887f24d27a6',
+                    gameId,
                     url,
                     parseInt(this.options.width),
                     parseInt(this.options.height),
@@ -132,115 +134,11 @@ class Embed {
      * @public
      */
     startIEDisclaimer(callback) {
-        // If IE browser.
-        let message = '';
-        let label = '';
-
-        /* eslint-disable */
-        switch (this.options.language) {
-            case 'ar':
-                message = `هذه اللعبة غير مدعومة بشكل كامل من متصفحك. قد تواجه مشكلات في الأداء.`;
-                label = `متابعة`;
-                break;
-            case 'da':
-                message = `Dette spil understøttes ikke fuldt ud af din browser. Du vil måske opleve problemer med ydeevnen.`;
-                label = `Fortsæt`;
-                break;
-            case 'nl':
-                message = `Deze game wordt niet volledig ondersteund door uw browser. U ondervindt mogelijk prestatieproblemen.`;
-                label = `Doorgaan`;
-                break;
-            case 'fi':
-                message = `Selaimesi ei tue peliä kaikilta osin. Tämä voi aiheuttaa suorituskykyyn liittyviä ongelmia.`;
-                label = `Jatka`;
-                break;
-            case 'fr':
-                message = `Ce jeu n'est pas totalement pris en charge par votre navigateur. Vous rencontrerez peut-être des problèmes de performances.`;
-                label = `Continuer`;
-                break;
-            case 'de':
-                message = `Dieses Spiel wird von Ihrem Browser nicht vollständig unterstützt. Es kann zu Performance-Problemen kommen.`;
-                label = `Weiter`;
-                break;
-            case 'el':
-                message = `Αυτό το παιχνίδι δεν υποστηρίζεται πλήρως από το πρόγραμμα περιήγησής σας. Ενδέχεται να αντιμετωπίσετε θέματα επιδόσεων.`;
-                label = `Συνέχεια`;
-                break;
-            case 'he':
-                message = `משחק זה אינו נתמך באופן מלא על-ידי הדפדפן שלך. ייתכן שתיתקל בבעיות בביצועים.`;
-                label = `המשך`;
-                break;
-            case 'hi':
-                message = `यह गेम आपके ब्राउज़र द्वारा पूरी तरह से समर्थित नहीं है. आप प्रदर्शन मुद्दों का अनुभव कर सकते हैं.`;
-                label = `जारी रखें`;
-                break;
-            case 'id':
-                message = `Permainan ini tidak sepenuhnya dukungan oleh browser Anda. Anda mungkin akan mengalami masalah performa.`;
-                label = `Lanjut`;
-                break;
-            case 'it':
-                message = `Questo gioco non è completamente supportato dal tuo browser. Potrebbero verificarsi problemi di prestazioni.`;
-                label = `Continua`;
-                break;
-            case 'jp':
-                message = `このゲームはお使いのブラウザーで完全にはサポートされていません。パフォーマンスの問題が発生する可能性があります。`;
-                label = `続行`;
-                break;
-            case 'kr':
-                message = `이 게임은 브라우저에서 완전히 지원하지 않습니다. 성능 문제가 발생할 수 있습니다.`;
-                label = `계속`;
-                break;
-            case 'no':
-                message = `Dette spillet støttes ikke helt av nettleseren. Du kan oppleve ytelsesproblemer.`;
-                label = `Fortsett`;
-                break;
-            case 'pl':
-                message = `Twoja przeglądarka nie obsługuje w pełni tej gry. Mogą wystąpić problemy z wydajnością.`;
-                label = `Kontynuuj`;
-                break;
-            case 'pt':
-                message = `Este jogo não é totalmente suportado pelo browser. Poderão ocorrer problemas de desempenho.`;
-                label = `Continuar`;
-                break;
-            case 'ru':
-                message = `Эта игра не в полной мере поддерживается вашим браузером. При ее использовании могут возникнуть проблемы.`;
-                label = `Продолжить`;
-                break;
-            case 'zh':
-                message = `你的浏览器不完全支持此游戏。你可能会遇到性能问题。`;
-                label = `继续`;
-                break;
-            case 'es':
-                message = `Este juego no es del todo compatible con tu navegador, por lo que podrías experimentar problemas de rendimiento.`;
-                label = `Continuar`;
-                break;
-            case 'sv':
-                message = `Din webbläsare har inte fullt stöd för det här spelet. Du kan uppleva prestandaproblem.`;
-                label = `Fortsätt`;
-                break;
-            case 'th':
-                message = `เบราว์เซอร์ของคุณไม่สามารถรองรับเกมนี้ได้อย่างเต็มที่ คุณอาจประสบปัญหาด้านประสิทธิภาพ`;
-                label = `ดำเนินการต่อ`;
-                break;
-            case 'tr':
-                message = `Bu oyun, tarayıcınız tarafından tam desteklenmiyor. Performans sorunları yaşayabilirsiniz.`;
-                label = `Devam`;
-                break;
-            case 'vi':
-                message = `Trình duyệt của bạn không hỗ trợ đầy đủ trò chơi này. Bạn có thể gặp sự cố về hiệu năng.`;
-                label = `Tiếp tục`;
-                break;
-            default:
-                message = `This game is not fully supported by your browser. You may experience performance issues. `;
-                label = `Continue`;
-        }
-        /* eslint-enable */
-
         const messageElement = document.createElement('p');
-        messageElement.innerText = message;
+        messageElement.innerText = Translations[this.options.language].message;
 
         const buttonElement = document.createElement('button');
-        buttonElement.innerText = label;
+        buttonElement.innerText = Translations[this.options.language].label;
         buttonElement.addEventListener('click', () => {
             container.innerHTML = '';
             if (typeof callback === 'function') {
@@ -287,56 +185,57 @@ class Embed {
         container.appendChild(frame);
 
         addEventListener('resize', () => {
-            debounce(this._setFrameDimensions(viewport, frame, width, height), 100);
+            debounce(this._setFrameDimensions(viewport, frame, width, height),
+                100);
         }, false);
 
+        // Add a fullscreen button for mobile sized screens.
+        // Doesn't work for iOS. So for iOS we just open the game in a new tab.
+        const displayMode = this._getDisplayMode();
+        if (screenfull.enabled && displayMode) {
+            const backdrop = document.createElement('div');
+            backdrop.style.display = displayMode === 'mobile'
+                ? 'block'
+                : 'none';
+            backdrop.style.position = 'absolute';
+            backdrop.style.zIndex = '1';
+            backdrop.style.top = '0';
+            backdrop.style.width = '100%';
+            backdrop.style.height = '100%';
+            backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 
-        // Doesn't work for iOS.
-        // if (screenfull.enabled) {
-        //     const displayMode = this._getDisplayMode();
-        //     const backdrop = document.createElement('div');
-        //     backdrop.style.display = displayMode === 'mobile'
-        //         ? 'block'
-        //         : 'none';
-        //     backdrop.style.position = 'absolute';
-        //     backdrop.style.zIndex = '1';
-        //     backdrop.style.top = '0';
-        //     backdrop.style.width = '100%';
-        //     backdrop.style.height = '100%';
-        //     backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-        //
-        //     container.appendChild(backdrop);
-        //
-        //     const button = document.createElement('button');
-        //     /* eslint-disable */
-        //     button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg>`;
-        //     /* eslint-enable */
-        //     button.style.display = displayMode === 'mobile' ? 'block' : 'none';
-        //     button.style.position = 'absolute';
-        //     button.style.zIndex = '2';
-        //     button.style.top = '50%';
-        //     button.style.left = '50%';
-        //     button.style.transform = 'translate(-50%, -50%)';
-        //     button.addEventListener('click', () => {
-        //         screenfull.request(frame);
-        //         setTimeout(() => {
-        //             this._setFrameDimensions(viewport, frame, width, height);
-        //         }, 1000);
-        //     });
-        //
-        //     container.appendChild(button);
-        //
-        //     addEventListener('resize', () => {
-        //         const displayMode = this._getDisplayMode();
-        //         if (displayMode === 'mobile') {
-        //             backdrop.style.display = 'block';
-        //             button.style.display = 'block';
-        //         } else {
-        //             backdrop.style.display = 'none';
-        //             button.style.display = 'none';
-        //         }
-        //     }, false);
-        // }
+            container.appendChild(backdrop);
+
+            const button = document.createElement('button');
+            /* eslint-disable */
+            button.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg>`;
+            /* eslint-enable */
+            button.style.display = displayMode === 'mobile' ? 'block' : 'none';
+            button.style.position = 'absolute';
+            button.style.zIndex = '2';
+            button.style.top = '50%';
+            button.style.left = '50%';
+            button.style.transform = 'translate(-50%, -50%)';
+            button.addEventListener('click', () => {
+                screenfull.request(frame);
+                setTimeout(() => {
+                    this._setFrameDimensions(viewport, frame, width, height);
+                }, 1000);
+            });
+
+            container.appendChild(button);
+
+            addEventListener('resize', () => {
+                const displayMode = this._getDisplayMode();
+                if (displayMode === 'mobile') {
+                    backdrop.style.display = 'block';
+                    button.style.display = 'block';
+                } else {
+                    backdrop.style.display = 'none';
+                    button.style.display = 'none';
+                }
+            }, false);
+        }
     }
 
     /**
@@ -354,7 +253,8 @@ class Embed {
     _createSplash(id, url, width, height) {
         this._getGameData(id).then(gameData => {
             let thumbnail = gameData.assets.find(asset =>
-                asset.hasOwnProperty('name') && asset.width === 512 && asset.height === 512);
+                asset.hasOwnProperty('name') && asset.width === 512 &&
+                asset.height === 512);
             if (thumbnail) {
                 thumbnail = `https://img.gamedistribution.com/${thumbnail.name}`;
             } else if (gameData.assets[0].hasOwnProperty('name')) {
@@ -419,29 +319,6 @@ class Embed {
                 .splash-top > div {
                     text-align: center;
                 }
-                .splash-top > div > button {
-                    border: 0;
-                    margin: auto;
-                    padding: 10px 22px;
-                    border-radius: 5px;
-                    border: 3px solid white;
-                    background: linear-gradient(0deg, #dddddd, #ffffff);
-                    color: #222;
-                    text-transform: uppercase;
-                    text-shadow: 0 0 1px #fff;
-                    font-family: Helvetica, Arial, sans-serif;
-                    font-weight: bold;
-                    font-size: 18px;
-                    cursor: pointer;
-                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-                }
-                .splash-top > div > button:hover {
-                    background: linear-gradient(0deg, #ffffff, #dddddd);
-                }
-                .splash-top > div > button:active {
-                    box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
-                    background: linear-gradient(0deg, #ffffff, #f5f5f5);
-                }
                 .splash-top > div > div {
                     position: relative;
                     width: 150px;
@@ -460,9 +337,16 @@ class Embed {
                     width: 100%;
                     height: 100%;
                 }
+                .splash-top > div > button > .splash-external-icon > svg {
+                    width: 16px;
+                    height: 16px;
+                    margin-bottom: -1px;
+                    margin-left: 5px;
+                }
             `;
             /* eslint-enable */
-            const head = document.head || document.getElementsByTagName('head')[0];
+            const head = document.head ||
+                document.getElementsByTagName('head')[0];
             const style = document.createElement('style');
             style.type = 'text/css';
             if (style.styleSheet) {
@@ -472,6 +356,13 @@ class Embed {
             }
             head.appendChild(style);
 
+            // Full-screen API doesn't work for iOS.
+            // So for iOS we just open the game in a new tab.
+            const iOS = this._isiOS();
+            const iconElement = iOS
+                ? `<span class="splash-external-icon"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 9h-4v-5h-5v-4h9v9zm-9 15v-4h5v-5h4v9h-9zm-15-9h4v5h5v4h-9v-9zm9-15v4h-5v5h-4v-9h9z"/></svg></span>`
+                : '';
+
             let html = `
                 <div class="splash-background-container">
                     <div class="splash-background-image"></div>
@@ -480,7 +371,10 @@ class Embed {
                     <div class="splash-top">
                         <div>
                             <div></div>
-                            <button id="splash-button">Play Game</button>
+                            <button id="splash-button">
+                                ${Translations[this.options.language].label}
+                                ${iconElement}
+                            </button>
                         </div>   
                     </div>
                 </div>
@@ -494,8 +388,12 @@ class Embed {
 
             const button = document.getElementById('splash-button');
             button.addEventListener('click', () => {
-                splash.parentNode.removeChild(splash);
-                this._createFrame(url, width, height);
+                if (iOS) {
+                    window.open(url, '_blank');
+                } else {
+                    splash.parentNode.removeChild(splash);
+                    this._createFrame(url, width, height);
+                }
             });
         }).catch(error => {
             throw new Error(error);
@@ -511,9 +409,17 @@ class Embed {
     _getGameData(id) {
         return new Promise(resolve => {
             let gameData = {
-                assets: [],
+                assets: [
+                    {
+                        height: 384,
+                        id: 0,
+                        name: '405c00612981466cbc5d9dcef4214811.jpg',
+                        width: 512,
+                    },
+                ],
             };
-            const gameDataUrl = `https://game.api.gamedistribution.com/game/get/${id.replace(/-/g, '')}`;
+            const gameDataUrl = `https://game.api.gamedistribution.com/game/get/${id.replace(
+                /-/g, '')}`;
             const gameDataRequest = new Request(gameDataUrl, {method: 'GET'});
             fetch(gameDataRequest).then((response) => {
                 const contentType = response.headers.get('content-type');
@@ -532,6 +438,7 @@ class Embed {
                 }
                 resolve(gameData);
             }).catch(() => {
+                console.log(gameData);
                 // Resolve with default data.
                 resolve(gameData);
             });
@@ -619,6 +526,29 @@ class Embed {
     }
 
     /**
+     * _getGameIdFromURL
+     * @param {String} url
+     * @return {string}
+     * @private
+     */
+    _getGameIdFromURL(url) {
+        const parser = document.createElement('a');
+        parser.href = url;
+        const id = parser.pathname.replace(/\//g, '');
+        return id.length === 32 ? id : 'a1c4858cc2db451bb97c8e926257b49a';
+    }
+
+    /**
+     * _isiOS
+     * @return {boolean}
+     * @private
+     */
+    _isiOS() {
+        return !!window.navigator.platform &&
+            /iPad|iPhone|iPod/.test(navigator.platform);
+    }
+
+    /**
      * _isIE
      * @return {boolean}
      * @private
@@ -655,12 +585,14 @@ export default Embed;
 
 const params = getQueryParams();
 const embed = new Embed({
-    url: params['url'],
-    gdprTracking: params['gdpr-tracking'],
-    gdprTargeting: params['gdpr-targeting'],
-    gdprThirdParty: params['gdpr-third-party'],
-    width: params['width'],
-    height: params['height'],
-    language: params['language'],
+    url: params['url'] ? params['url'] : null,
+    gdprTracking: params['gdpr-tracking'] ? params['gdpr-tracking'] : null,
+    gdprTargeting: params['gdpr-targeting'] ? params['gdpr-targeting'] : null,
+    gdprThirdParty: params['gdpr-third-party']
+        ? params['gdpr-third-party']
+        : null,
+    width: params['width'] ? params['width'] : null,
+    height: params['height'] ? params['height'] : null,
+    language: params['language'] ? params['language'] : null,
 });
 embed.start();
