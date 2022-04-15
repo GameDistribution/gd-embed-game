@@ -86,4 +86,4 @@ As an example; `https://html5.gamedistribution.com/?url=https://html5.gamedistri
 | gdpr-tracking | Set to `0` to disable tracking services or to `1` to keep them enabled. |
 | gdpr-targeting | Set to `0` to disable advertisement targeting or to `1` to keep it enabled. Take note, setting this to a values of `0` can have great revenue impact. |
 | gdpr-third-party | Set to `0` to disable third party services or to `1` to keep them enabled. |
-| gd_sdk_referrer_url | Your exact page url. |
+| gd_sdk_referrer_url | Your exact game page url. |
