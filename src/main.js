@@ -12,6 +12,9 @@ import {
     updateQueryStringParameter,
     debounce,
 } from './modules/common';
+import {
+    getTopDomain,
+} from '@bygd/gd-sdk-era/dist/default';
 
 let instance = null;
 
@@ -252,6 +255,7 @@ class Embed {
      */
     _createSplash(id, url, width, height) {
         this._getGameData(id).then(gameData => {
+            debugger;
             let thumbnail = gameData.assets.find(asset =>
                 asset.hasOwnProperty('name') && asset.width === 512 &&
                 asset.height === 512);
@@ -418,8 +422,10 @@ class Embed {
                     },
                 ],
             };
-            const gameDataUrl = `https://game.api.gamedistribution.com/game/get/${id.replace(
-                /-/g, '')}`;
+            const gameDataUrl = `https://game.api.gamedistribution.com/game/v4/get/${id.replace(
+                /-/g,
+                ''
+            )}/?domain=${getTopDomain()}&localTime=${new Date().getHours()}`;
             const gameDataRequest = new Request(gameDataUrl, {method: 'GET'});
             fetch(gameDataRequest).then((response) => {
                 const contentType = response.headers.get('content-type');
