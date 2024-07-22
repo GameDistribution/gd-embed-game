@@ -83,7 +83,7 @@ As an example; `https://embed.gamedistribution.com/?url=https://html5.gamedistri
 | width | The preferred height of the game. The game will remain responsive, but we use this to calculate the aspect ratio. |
 | height | the preferred width of the game. The game will remain responsive, but we use this to calculate the aspect ratio. |
 | language | Language code for the IE disclaimer about performance. Example values; `en`, `nl`, `de` ... |
-| gdpr-tracking | Set to `0` to disable tracking services or to `1` to keep them enabled. |
+| gdpr-tracking | Set to `0` to disable tracking services(Personalized Ads) or to `1` to keep them enabled. |
 | gdpr-targeting | Set to `0` to disable advertisement targeting or to `1` to keep it enabled. Take note, setting this to a values of `0` can have great revenue impact. |
 | gdpr-third-party | Set to `0` to disable third party services or to `1` to keep them enabled. |
 | gd_sdk_referrer_url | Your exact game page url. |
