@@ -36,7 +36,7 @@ A demo page can be found here: <a href="https://embed.gamedistribution.com/demo.
 </style>
 <div class="gd__aspect-ratio-box">
     <iframe
-        src="https://embed.gamedistribution.com/?url=https://html5.gamedistribution.com/405c00612981466cbc5d9dcef4214811/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1"
+        src="https://embed.gamedistribution.com/?url=https://html5.gamedistribution.com/405c00612981466cbc5d9dcef4214811/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1&gd_sdk_referrer_url=https://www.example.com/games/game-path"
         width="100%"
         height="100%"
         scrolling="none"
@@ -75,7 +75,7 @@ grunt build
 
 ## GET Parameters
 The following GET parameters can be added. The first parameter should be prefixed with a `?` character and any additional ones with a `&` character.
-As an example; `https://html5.gamedistribution.com/?url=https://html5.gamedistribution.com/405c00612981466cbc5d9dcef4214811/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1`.
+As an example; `https://embed.gamedistribution.com/?url=https://html5.gamedistribution.com/405c00612981466cbc5d9dcef4214811/&width=510&height=900&language=es&gdpr-tracking=1&gdpr-targeting=1&gd_sdk_referrer_url=https://www.example.com/games/game-path`.
 
 | Event | Description |
 | --- | --- |
